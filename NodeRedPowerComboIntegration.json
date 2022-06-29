@@ -1,0 +1,1053 @@
+[
+    {
+        "id": "22cb4577cd37a363",
+        "type": "tab",
+        "label": "One Radio Control",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "83f11143cb609b81",
+        "type": "xml",
+        "z": "22cb4577cd37a363",
+        "name": "",
+        "property": "payload",
+        "attr": "",
+        "chr": "",
+        "x": 210,
+        "y": 660,
+        "wires": [
+            [
+                "9d6c4098ced8f771"
+            ]
+        ]
+    },
+    {
+        "id": "6d0ced40599d3c61",
+        "type": "switch",
+        "z": "22cb4577cd37a363",
+        "name": "Switch based on Radio",
+        "property": "payload.RadioInfo.RadioNr",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 860,
+        "y": 660,
+        "wires": [
+            [
+                "e22719b65b9b1ac2",
+                "78441c493d512b96"
+            ],
+            [
+                "f305b88e2c808d4e",
+                "2853f6c0866e724f"
+            ]
+        ]
+    },
+    {
+        "id": "e22719b65b9b1ac2",
+        "type": "change",
+        "z": "22cb4577cd37a363",
+        "name": "Format Frequency",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "(\t$freq := $string(msg.payload.RadioInfo.TXFreq[0]);\t$substring($freq,0,2) & '.' & $substring($freq,2,3) & '.' & $substring($freq,5,2);\t)\t",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1150,
+        "y": 540,
+        "wires": [
+            [
+                "dce27b96fdc2a010"
+            ]
+        ]
+    },
+    {
+        "id": "dce27b96fdc2a010",
+        "type": "ui_text",
+        "z": "22cb4577cd37a363",
+        "group": "c6e22f2fc8141c88",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Radio 1 Frequency",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1390,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "3ca4a0a3c571f8e3",
+        "type": "udp in",
+        "z": "22cb4577cd37a363",
+        "name": "",
+        "iface": "",
+        "port": "12333",
+        "ipv": "udp4",
+        "multicast": "false",
+        "group": "",
+        "datatype": "utf8",
+        "x": 60,
+        "y": 660,
+        "wires": [
+            [
+                "83f11143cb609b81"
+            ]
+        ]
+    },
+    {
+        "id": "f305b88e2c808d4e",
+        "type": "change",
+        "z": "22cb4577cd37a363",
+        "name": "Format Frequency",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "(\t$freq := $string(msg.payload.RadioInfo.TXFreq[0]);\t$substring($freq,0,2) & '.' & $substring($freq,2,3) & '.' & $substring($freq,5,2);\t)\t",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1150,
+        "y": 600,
+        "wires": [
+            [
+                "8fec76f37d3d59dd"
+            ]
+        ]
+    },
+    {
+        "id": "8fec76f37d3d59dd",
+        "type": "ui_text",
+        "z": "22cb4577cd37a363",
+        "group": "c6e22f2fc8141c88",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Radio 2 Frequency",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 1390,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "83ef3fe7ff97d1f7",
+        "type": "function",
+        "z": "22cb4577cd37a363",
+        "name": "Parse Band",
+        "func": "\nvar freq = parseInt(msg.payload.RadioInfo.TXFreq[0]);\nlet band;\nif(freq >= 1390000 && freq <= 1450000)\n{\n    band = \"20m\";\n} else if (freq >= 2090000 && freq <= 2150000)\n{\n    band = \"15m\";\n} else if (freq >= 2790000 && freq <= 3050000)\n{\n    band = \"10m\";\n} else if (freq >= 170000 && freq <= 200000)\n{\n    band = \"160m\";\n} else if (freq >= 340000 && freq <= 410000)\n{\n    band = \"80m\";\n} else if (freq >= 690000 && freq <= 750000)\n{\n    band = \"40m\";\n} else {\n    band = \"OOB\";\n}\n\nmsg.payload = band;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1370,
+        "y": 720,
+        "wires": [
+            [
+                "a08def2eef1aed6a"
+            ]
+        ]
+    },
+    {
+        "id": "b648c30a16ddda62",
+        "type": "tcp in",
+        "z": "22cb4577cd37a363",
+        "name": "KAT500 Read",
+        "server": "client",
+        "host": "192.168.1.68",
+        "port": "6000",
+        "datamode": "stream",
+        "datatype": "utf8",
+        "newline": "\\n",
+        "topic": "",
+        "base64": false,
+        "x": 370,
+        "y": 1080,
+        "wires": [
+            [
+                "d2b675a78853d9bd"
+            ]
+        ]
+    },
+    {
+        "id": "015e1e921c892007",
+        "type": "tcp out",
+        "z": "22cb4577cd37a363",
+        "host": "192.168.1.68",
+        "port": "6000",
+        "beserver": "client",
+        "base64": false,
+        "end": false,
+        "name": "KAT500 Out",
+        "x": 2030,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "d2b675a78853d9bd",
+        "type": "change",
+        "z": "22cb4577cd37a363",
+        "name": "Parse KAT500",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "(\t$arr := $split(msg.payload,\"::\");\t$arr[0] & \"::\" & $arr[1] & \"::\";\t)\t",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "subtopic",
+                "pt": "msg",
+                "to": "(\t$arr := $split(msg.payload,\"::\");\t$arr[2];\t)\t",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "fulltopic",
+                "pt": "msg",
+                "to": "(\t$arr := $split(msg.payload,\"::\");\t$arr[0] & \"::\" & $arr[1] & \"::\" & $arr[2];\t)\t",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "(\t$arr := $split(msg.payload,\"::\");\t$arr[3];\t)\t",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 580,
+        "y": 1080,
+        "wires": [
+            [
+                "b83d015001aa5a56"
+            ]
+        ]
+    },
+    {
+        "id": "f89189d1798f273e",
+        "type": "switch",
+        "z": "22cb4577cd37a363",
+        "name": "Switch Topic",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "tuner::dropdown::",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "tuner::meter::",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1050,
+        "y": 1080,
+        "wires": [
+            [
+                "0f066b934d41d624"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "0f066b934d41d624",
+        "type": "switch",
+        "z": "22cb4577cd37a363",
+        "name": "Switch dropdown",
+        "property": "subtopic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Antenna",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Mode",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1290,
+        "y": 1000,
+        "wires": [
+            [
+                "c48e4b06363467aa"
+            ],
+            [
+                "5bb09a3ba6a21a17"
+            ]
+        ]
+    },
+    {
+        "id": "c48e4b06363467aa",
+        "type": "ui_dropdown",
+        "z": "22cb4577cd37a363",
+        "name": "",
+        "label": "Antenna",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "c6e22f2fc8141c88",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "One",
+                "value": "One",
+                "type": "str"
+            },
+            {
+                "label": "Two",
+                "value": "Two",
+                "type": "str"
+            },
+            {
+                "label": "Three",
+                "value": "Three",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "",
+        "topicType": "str",
+        "className": "",
+        "x": 1540,
+        "y": 980,
+        "wires": [
+            [
+                "e28e40fa2eaee69f"
+            ]
+        ]
+    },
+    {
+        "id": "b83d015001aa5a56",
+        "type": "rbe",
+        "z": "22cb4577cd37a363",
+        "name": "block unless change 3",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "fulltopic",
+        "x": 800,
+        "y": 1080,
+        "wires": [
+            [
+                "f89189d1798f273e"
+            ]
+        ]
+    },
+    {
+        "id": "5bb09a3ba6a21a17",
+        "type": "ui_dropdown",
+        "z": "22cb4577cd37a363",
+        "name": "",
+        "label": "Tuner Mode",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "c6e22f2fc8141c88",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "Auto",
+                "value": "Auto",
+                "type": "str"
+            },
+            {
+                "label": "Manual",
+                "value": "Manual",
+                "type": "str"
+            },
+            {
+                "label": "Bypass",
+                "value": "Bypass",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 1550,
+        "y": 1040,
+        "wires": [
+            [
+                "963a6ab5dff2edb4"
+            ]
+        ]
+    },
+    {
+        "id": "cbf4afacdc199293",
+        "type": "rbe",
+        "z": "22cb4577cd37a363",
+        "name": "block unless changed 1",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload.RadioInfo.TXFreq[0]",
+        "topi": "payload.RadioInfo.RadioNr",
+        "x": 590,
+        "y": 660,
+        "wires": [
+            [
+                "6d0ced40599d3c61"
+            ]
+        ]
+    },
+    {
+        "id": "78441c493d512b96",
+        "type": "switch",
+        "z": "22cb4577cd37a363",
+        "name": "filter active radio 1",
+        "property": "payload.RadioInfo.ActiveRadioNr[0]",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 1150,
+        "y": 700,
+        "wires": [
+            [
+                "83ef3fe7ff97d1f7"
+            ]
+        ]
+    },
+    {
+        "id": "2853f6c0866e724f",
+        "type": "switch",
+        "z": "22cb4577cd37a363",
+        "name": "filter active radio 2",
+        "property": "payload.RadioInfo.ActiveRadioNr[0]",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 1150,
+        "y": 760,
+        "wires": [
+            [
+                "83ef3fe7ff97d1f7"
+            ]
+        ]
+    },
+    {
+        "id": "a08def2eef1aed6a",
+        "type": "rbe",
+        "z": "22cb4577cd37a363",
+        "name": "block unless changed 2",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload",
+        "topi": "topic",
+        "x": 1610,
+        "y": 720,
+        "wires": [
+            [
+                "ed9e47169dcd68b8"
+            ]
+        ]
+    },
+    {
+        "id": "ed9e47169dcd68b8",
+        "type": "function",
+        "z": "22cb4577cd37a363",
+        "name": "band-antenna logic",
+        "func": "var band = msg.payload;\n\nlet antenna;\nlet mode;\n\nswitch(band)\n{\n    case \"160m\":\n        antenna = \"Three\";\n        mode = \"Auto\";\n        break;\n    case \"80m\":\n        antenna = \"One\";\n        mode = \"Bypass\";\n        break;\n    case \"40m\":\n        antenna = \"One\";\n        mode = \"Bypass\";\n        break;\n    case \"20m\":\n        antenna=\"One\";\n        mode = \"Bypass\";\n        break;\n    case \"15m\":\n        antenna=\"Two\";\n        mode = \"Auto\";\n        break;\n    case \"10m\":\n        antenna=\"Two\";\n        mode = \"Auto\";\n        break;\n    default:\n        antenna=\"One\";\n        mode = \"Bypass\"; \n        band = \"20m\";\n}\n\n\n\nmsg.antenna = antenna;\nmsg.mode = mode;\nmsg.band = band;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1850,
+        "y": 720,
+        "wires": [
+            [
+                "b7b87c8f22baa20d",
+                "1e43010786d28ed2",
+                "9988d86fdb0b7e84"
+            ]
+        ]
+    },
+    {
+        "id": "e28e40fa2eaee69f",
+        "type": "function",
+        "z": "22cb4577cd37a363",
+        "name": "change antenna",
+        "func": "return {payload: \"tuner::dropdown::Antenna::\" + msg.payload};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1780,
+        "y": 980,
+        "wires": [
+            [
+                "015e1e921c892007"
+            ]
+        ]
+    },
+    {
+        "id": "963a6ab5dff2edb4",
+        "type": "function",
+        "z": "22cb4577cd37a363",
+        "name": "change mode",
+        "func": "return {payload: \"tuner::dropdown::Mode::\" + msg.payload};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1780,
+        "y": 1040,
+        "wires": [
+            [
+                "015e1e921c892007"
+            ]
+        ]
+    },
+    {
+        "id": "b7b87c8f22baa20d",
+        "type": "change",
+        "z": "22cb4577cd37a363",
+        "name": "inject antenna",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "antenna",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1560,
+        "y": 860,
+        "wires": [
+            [
+                "e28e40fa2eaee69f"
+            ]
+        ]
+    },
+    {
+        "id": "1e43010786d28ed2",
+        "type": "switch",
+        "z": "22cb4577cd37a363",
+        "name": "inject mode",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "mode",
+                "vt": "msg"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 1550,
+        "y": 920,
+        "wires": [
+            [
+                "963a6ab5dff2edb4"
+            ]
+        ]
+    },
+    {
+        "id": "b2c408b226804698",
+        "type": "start-up-trigger",
+        "z": "22cb4577cd37a363",
+        "x": 1600,
+        "y": 1120,
+        "wires": [
+            [
+                "1e30e76ea9cf9356"
+            ]
+        ]
+    },
+    {
+        "id": "1e30e76ea9cf9356",
+        "type": "change",
+        "z": "22cb4577cd37a363",
+        "name": "inject login",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "server::login::admin::admin",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1790,
+        "y": 1120,
+        "wires": [
+            [
+                "015e1e921c892007"
+            ]
+        ]
+    },
+    {
+        "id": "40f92c1a18986d20",
+        "type": "tcp in",
+        "z": "22cb4577cd37a363",
+        "name": "KPA500 Read",
+        "server": "client",
+        "host": "192.168.1.68",
+        "port": "6001",
+        "datamode": "stream",
+        "datatype": "utf8",
+        "newline": "\\n",
+        "topic": "",
+        "base64": false,
+        "x": 250,
+        "y": 320,
+        "wires": [
+            [
+                "e3515ebcadfc2ac3"
+            ]
+        ]
+    },
+    {
+        "id": "e3515ebcadfc2ac3",
+        "type": "change",
+        "z": "22cb4577cd37a363",
+        "name": "Parse KPA500",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "(\t$arr := $split(msg.payload,\"::\");\t$arr[0] & \"::\" & $arr[1] & \"::\";\t)\t",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "subtopic",
+                "pt": "msg",
+                "to": "(\t$arr := $split(msg.payload,\"::\");\t$arr[2];\t)\t",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "fulltopic",
+                "pt": "msg",
+                "to": "(\t$arr := $split(msg.payload,\"::\");\t$arr[0] & \"::\" & $arr[1] & \"::\" & $arr[2];\t)\t",
+                "tot": "jsonata"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "(\t$arr := $split(msg.payload,\"::\");\t$arr[3];\t)\t",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 320,
+        "wires": [
+            [
+                "4ee994bf879bc48d"
+            ]
+        ]
+    },
+    {
+        "id": "4ee994bf879bc48d",
+        "type": "switch",
+        "z": "22cb4577cd37a363",
+        "name": "Switch topic",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "  amp::dropdown::",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 670,
+        "y": 320,
+        "wires": [
+            [
+                "28160bcb00544ffa"
+            ]
+        ]
+    },
+    {
+        "id": "28160bcb00544ffa",
+        "type": "switch",
+        "z": "22cb4577cd37a363",
+        "name": "Switch dropdown",
+        "property": "subtopic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Band",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 910,
+        "y": 320,
+        "wires": [
+            [
+                "38050fac6c5d5ffa"
+            ]
+        ]
+    },
+    {
+        "id": "38050fac6c5d5ffa",
+        "type": "rbe",
+        "z": "22cb4577cd37a363",
+        "name": "block unless changed 4",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload",
+        "topi": "topic",
+        "x": 1190,
+        "y": 320,
+        "wires": [
+            [
+                "36cf43421372c352"
+            ]
+        ]
+    },
+    {
+        "id": "36cf43421372c352",
+        "type": "ui_dropdown",
+        "z": "22cb4577cd37a363",
+        "name": "",
+        "label": "Amp band dropdown",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "c6e22f2fc8141c88",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "160m",
+                "value": "160m",
+                "type": "str"
+            },
+            {
+                "label": "80m",
+                "value": "80m",
+                "type": "str"
+            },
+            {
+                "label": "40m",
+                "value": "40m",
+                "type": "str"
+            },
+            {
+                "label": "20m",
+                "value": "20m",
+                "type": "str"
+            },
+            {
+                "label": "15m",
+                "value": "15m",
+                "type": "str"
+            },
+            {
+                "label": "10m",
+                "value": "10m",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 1480,
+        "y": 320,
+        "wires": [
+            [
+                "d8ef1a8dad51aada"
+            ]
+        ]
+    },
+    {
+        "id": "d8ef1a8dad51aada",
+        "type": "function",
+        "z": "22cb4577cd37a363",
+        "name": "change amp band",
+        "func": "return {payload: \"amp::dropdown::Band::\" + msg.payload};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1830,
+        "y": 320,
+        "wires": [
+            [
+                "20101133d05c9210"
+            ]
+        ]
+    },
+    {
+        "id": "9988d86fdb0b7e84",
+        "type": "change",
+        "z": "22cb4577cd37a363",
+        "name": "inject amp band",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "band",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1540,
+        "y": 400,
+        "wires": [
+            [
+                "d8ef1a8dad51aada"
+            ]
+        ]
+    },
+    {
+        "id": "98a26ef9175ac81a",
+        "type": "start-up-trigger",
+        "z": "22cb4577cd37a363",
+        "x": 1600,
+        "y": 240,
+        "wires": [
+            [
+                "54aa1ee3a871c27b"
+            ]
+        ]
+    },
+    {
+        "id": "54aa1ee3a871c27b",
+        "type": "change",
+        "z": "22cb4577cd37a363",
+        "name": "inject login",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "server::login::admin::admin",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1790,
+        "y": 240,
+        "wires": [
+            [
+                "20101133d05c9210"
+            ]
+        ]
+    },
+    {
+        "id": "20101133d05c9210",
+        "type": "tcp out",
+        "z": "22cb4577cd37a363",
+        "host": "192.168.1.68",
+        "port": "6001",
+        "beserver": "client",
+        "base64": false,
+        "end": false,
+        "name": "KPA500 Out",
+        "x": 2050,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "9d6c4098ced8f771",
+        "type": "switch",
+        "z": "22cb4577cd37a363",
+        "name": "filter score",
+        "property": "$exists(msg.payload.RadioInfo) ? \"RadioInfo\" : \"Score\"",
+        "propertyType": "jsonata",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "RadioInfo",
+                "vt": "env"
+            },
+            {
+                "t": "eq",
+                "v": "Score",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 370,
+        "y": 660,
+        "wires": [
+            [
+                "cbf4afacdc199293"
+            ],
+            [
+                "f6adeaea16a0de3c"
+            ]
+        ]
+    },
+    {
+        "id": "182cf1189c5455b3",
+        "type": "comment",
+        "z": "22cb4577cd37a363",
+        "name": "n1mm sends other info every 15m/randomly",
+        "info": "apparently it looks something like this\n\n\"<?xml version=\"1.0\"?>↵<dynamicresults>↵→<contest>CQMMDX</contest>↵→<call>AJ1AJ</call>↵→<ops>AJ1AJ</ops>↵→<class power=\"HIGH\" assisted = \"ASSISTED\" transmitter=\"ONE\" ops=\"SINGLE-OP\" bands=\"ALL\" mode=\"CW\" overlay=\"N/A\"></class>↵→<club> </club>↵→<qth>↵→→<dxcccountry>K</dxcccountry>↵→→<cqzone>5</cqzone>↵→→<iaruzone>8</iaruzone>↵→→<arrlsection>NH</arrlsection>↵→→<stprvoth>NH</stprvoth>↵→→<grid6>FN42EW</grid6>↵→</qth>↵→<breakdown>↵→→<qso band=\"20\" mode=\"CW\">238</qso>↵→→<mult band=\"20\" mode=\"CW\" type=\"WPXPREFIX\">14</mult>↵→→<mult band=\"20\" mode=\"CW\" type=\"country\">35</mult>↵→→<point band=\"20\" mode=\"CW\">734</point>↵→→<qso band=\"15\" mode=\"CW\">23</qso>↵→→<mult band=\"15\" mode=\"CW\" type=\"WPXPREFIX\">5</mult>↵→→<mult band=\"15\" mode=\"CW\" type=\"country\">8</mult>↵→→<point band=\"15\" mode=\"CW\">69</point>↵→→<qso band=\"40\" mode=\"CW\">161</qso>↵→→<mult band=\"40\" mode=\"CW\" type=\"WPXPREFIX\">8</mult>↵→→<mult band=\"40\" mode=\"CW\" type=\"country\">13</mult>↵→→<point band=\"40\" mode=\"CW\">767...\"",
+        "x": 410,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "f6adeaea16a0de3c",
+        "type": "debug",
+        "z": "22cb4577cd37a363",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "c6e22f2fc8141c88",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "a82880c0ca4e9b6a",
+        "order": 1,
+        "disp": false,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "a82880c0ca4e9b6a",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
