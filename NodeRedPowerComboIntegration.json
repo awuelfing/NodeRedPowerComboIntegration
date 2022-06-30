@@ -208,12 +208,12 @@
         "id": "015e1e921c892007",
         "type": "tcp out",
         "z": "22cb4577cd37a363",
+        "name": "KAT500 Out",
         "host": "192.168.1.68",
         "port": "6000",
         "beserver": "client",
         "base64": false,
         "end": false,
-        "name": "KAT500 Out",
         "x": 2030,
         "y": 1040,
         "wires": []
@@ -962,12 +962,12 @@
         "id": "20101133d05c9210",
         "type": "tcp out",
         "z": "22cb4577cd37a363",
+        "name": "KPA500 Out",
         "host": "192.168.1.68",
         "port": "6001",
         "beserver": "client",
         "base64": false,
         "end": false,
-        "name": "KPA500 Out",
         "x": 2050,
         "y": 320,
         "wires": []
@@ -977,13 +977,13 @@
         "type": "switch",
         "z": "22cb4577cd37a363",
         "name": "filter score",
-        "property": "$exists(msg.payload.RadioInfo) ? \"RadioInfo\" : \"Score\"",
+        "property": "$exists(msg.payload.RadioInfo[0]) ? \"RadioInfo\" : \"Score\"",
         "propertyType": "jsonata",
         "rules": [
             {
                 "t": "eq",
                 "v": "RadioInfo",
-                "vt": "env"
+                "vt": "str"
             },
             {
                 "t": "eq",
@@ -1020,7 +1020,7 @@
         "type": "debug",
         "z": "22cb4577cd37a363",
         "name": "",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
